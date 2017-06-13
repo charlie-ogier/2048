@@ -1,0 +1,112 @@
+' Gambas class file
+
+gButton As Button
+h1Panel As Panel
+byData As New Byte[16]
+
+Public Sub Form_Open()
+Dim g, siCount As Short
+
+For siCount = 1 To 2
+  AddNumber
+Next
+
+Setup
+
+End
+
+Public Sub Form_Show()
+
+Rebuild
+
+End
+
+Public Sub Setup()
+Dim hHBox As HBox
+Dim hTextBox As TextBox
+
+With Me
+  .padding = 5
+  .Title = "2048"
+  .Arrangement = Arrange.vertical
+End With
+
+hHbox = New HBox(Me)
+With hHBox
+  .Height = 28
+  .width = 100
+End With
+
+h1Panel = New Panel(Me)
+With h1Panel
+  .expand = True
+  .Arrangement = Arrange.Row
+End With
+
+hTextBox = New TextBox(hHBox)
+With hTextBox
+  .Expand = True
+  .ReadOnly = True
+End With
+
+Rebuild
+
+End
+
+Public Sub Rebuild()
+Dim siCount As Short
+Dim siH, siW As Short
+
+h1Panel.Children.Clear
+
+For siCount = 0 To 15
+  gButton = New Button(h1Panel)
+  With gButton
+    .Height = h1Panel.Height / 4
+    .Width = h1Panel.Width / 4
+    .Border = Border.Solid
+    .Tag = siCount
+  End With
+  siH = gButton.Height
+  siW = gButton.Width
+  If siH > siW Then 
+    gButton.Font.size = siW / 4
+  Else
+    gButton.Font.size = sih / 4
+  Endif
+  If byData[siCount] > 0 Then gButton.Text = Str(byData[siCount])
+Next
+
+End
+
+Public Sub AddNumber() 
+Dim byNew As New Byte[]
+Dim byCount, byPos, byResult As Byte
+
+For byCount = 0 To 15
+  If byData[byCount] = 0 Then byNew.Add(byCount)
+Next
+
+byPos = byNew[Rand(0, byNew.max)]
+
+byResult = TwoOrFour()
+
+byData[byPos] = byResult
+
+End
+
+Public Sub TwoOrFour() As Byte
+Dim byNo As Byte
+Dim ByResult As Byte = 2
+
+byNo = Rand(0, 1)
+If byNo = 1 Then byResult = 4
+Return byResult
+
+End
+
+Public Sub Form_Resize()
+
+Rebuild
+
+End

@@ -1,0 +1,12 @@
+# Gambas Project File 3.0
+# Compiled with Gambas 3.9.2
+Title=2048
+Startup=FMain
+Profiling=1
+Version=0.0.1
+Component=gb.image
+Component=gb.qt4
+Component=gb.form
+TabSize=2
+Language=en_US
+Packager=1
