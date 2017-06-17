@@ -2,11 +2,23 @@
 Count=0
 
 [DebugWindow]
-Count=1
+Count=4
 DebugWindow[1]="byData"
+DebugWindow[2]="byDataCheck"
+DebugWindow[3]="byNext"
+DebugWindow[4]="byNextDown"
 
 [DebugWindow/byData]
-Geometry=[1630,14,224,485]
+Geometry=[1659,-1,224,485]
+
+[DebugWindow/byDataCheck]
+Geometry=[1423,-8,224,487]
+
+[DebugWindow/byNext]
+Geometry=[934,9,224,280]
+
+[DebugWindow/byNextDown]
+Geometry=[1172,5,224,280]
 
 [DebugWindow/sData]
 Geometry=[-8,-8,224,280]
@@ -14,7 +26,7 @@ Geometry=[-8,-8,224,280]
 [OpenFile]
 File[1]=".src/FMain.form"
 Active=2
-File[2]=".src/FMain.class:0.67"
+File[2]=".src/FMain.class:0.150"
 Count=2
 
 [Watches]

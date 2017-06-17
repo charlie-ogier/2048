@@ -2,14 +2,18 @@
 
 gButton As Button
 h1Panel As Panel
+h1Label As Label
 byData As New Byte[16]
 
 Public Sub Form_Open()
-Dim g, siCount As Short
+Dim siCount As Short
 
 For siCount = 1 To 2
   AddNumber
 Next
+
+byData[5] = 2 ''TEMP
+byData[9] = 2 ''TEMP
 
 Setup
 
@@ -23,7 +27,6 @@ End
 
 Public Sub Setup()
 Dim hHBox As HBox
-Dim hTextBox As TextBox
 
 With Me
   .padding = 5
@@ -43,10 +46,9 @@ With h1Panel
   .Arrangement = Arrange.Row
 End With
 
-hTextBox = New TextBox(hHBox)
-With hTextBox
+h1Label = New Label(hHBox)
+With h1Label
   .Expand = True
-  .ReadOnly = True
 End With
 
 Rebuild
@@ -54,6 +56,7 @@ Rebuild
 End
 
 Public Sub Rebuild()
+Dim cColour As Collection = ["2": Color.white, "4": Color.Yellow, "8": Color.DarkYellow, "16": Color.Orange, "32": Color.red]
 Dim siCount As Short
 Dim siH, siW As Short
 
@@ -67,14 +70,23 @@ For siCount = 0 To 15
     .Border = Border.Solid
     .Tag = siCount
   End With
+
   siH = gButton.Height
   siW = gButton.Width
+
   If siH > siW Then 
     gButton.Font.size = siW / 4
   Else
-    gButton.Font.size = sih / 4
+    gButton.Font.size = siH / 4
   Endif
-  If byData[siCount] > 0 Then gButton.Text = Str(byData[siCount])
+
+  If byData[siCount] > 0 Then
+   gButton.Text = Str(byData[siCount])
+   gButton.background = cColour[Str(gButton.text)]
+  Else
+    gButton.background = Color.Default
+  End If
+
 Next
 
 End
@@ -87,7 +99,8 @@ For byCount = 0 To 15
   If byData[byCount] = 0 Then byNew.Add(byCount)
 Next
 
-byPos = byNew[Rand(0, byNew.max)]
+Try byPos = byNew[Rand(0, byNew.max)] ''If Error game over?
+If Error Then Message.Info("End of game", "OK")
 
 byResult = TwoOrFour()
 
@@ -97,16 +110,72 @@ End
 
 Public Sub TwoOrFour() As Byte
 Dim byNo As Byte
-Dim ByResult As Byte = 2
+Dim ByResult As Byte = 4
 
 byNo = Rand(0, 1)
-If byNo = 1 Then byResult = 4
+If byNo = 1 Then byResult = 2
 Return byResult
+
+End
+
+Public Sub GoUpDown(bUpDown As Boolean) ' Down is false
+Dim byNext As Byte[] = [12, 15, 8, 11, 4, 7]
+Dim byNextDown As Byte[] = [0, 3, 4, 7, 8, 11]
+Dim byDataCheck As New Byte[]
+Dim byCount, byOuter As Byte
+Dim bCheck As Boolean
+Dim byValue As Byte = -4
+
+If bUpDown = False Then
+  byValue = 4
+  byNext = byNextDown
+Endif
+
+Repeat
+  For byOuter = 0 To 5 Step 2
+    For byCount = byNext[byOuter] To byNext[byOuter + 1] 'To move tiles with nothing next to them
+        bCheck = False
+        byDataCheck = byData.Copy()
+      If byData[byCount] <> 0 Then
+        If byData[byCount + byValue] = 0 Then
+          byData[byCount + byValue] = byData[byCount]
+          byData[byCount] = 0
+        Endif
+      Endif
+    Next
+
+    For byCount = byNext[byOuter] To byNext[byOuter + 1] 'To sort tiles next to other tiles
+      If byData[byCount + byValue] = byData[byCount] Then
+        byData[byCount + byValue] = byData[byCount + byValue] + byData[byCount + byValue]
+        byData[byCount] = 0
+      Endif
+    Next
+  Next
+
+  For byCount = 0 To byNext.Max
+    If byDataCheck[byCount] <> byData[byCount] Then
+      bCheck = True
+      Break
+    Endif
+  Next
+Until bCheck = False
+
+AddNumber
+Rebuild
 
 End
 
 Public Sub Form_Resize()
 
 Rebuild
+
+End
+
+Public Sub Form_KeyPress() 'TextBoxMoves_KeyPress()
+
+If Key.Code = Key.up Then GoUpDown(True)
+If Key.Code = Key.Down Then GoUpDown(False)
+' If Key.Code = Key.Left Then GoLeft
+' If Key.Code = Key.Right Then GoRight
 
 End
