@@ -134,20 +134,18 @@ Endif
 Repeat
   For byOuter = 0 To 5 Step 2
     For byCount = byNext[byOuter] To byNext[byOuter + 1] 'To move tiles with nothing next to them
-        bCheck = False
-        byDataCheck = byData.Copy()
+      bCheck = False
+      byDataCheck = byData.Copy()
       If byData[byCount] <> 0 Then
         If byData[byCount + byValue] = 0 Then
           byData[byCount + byValue] = byData[byCount]
           byData[byCount] = 0
+        Else
+          If byData[byCount + byValue] = byData[byCount] Then
+            byData[byCount + byValue] = byData[byCount + byValue] + byData[byCount + byValue]
+            byData[byCount] = 0
+          End If
         Endif
-      Endif
-    Next
-
-    For byCount = byNext[byOuter] To byNext[byOuter + 1] 'To sort tiles next to other tiles
-      If byData[byCount + byValue] = byData[byCount] Then
-        byData[byCount + byValue] = byData[byCount + byValue] + byData[byCount + byValue]
-        byData[byCount] = 0
       Endif
     Next
   Next
